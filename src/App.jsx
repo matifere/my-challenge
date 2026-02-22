@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { List, ListItem, TextField, Button } from '@mui/material';
 
 function App() {
   const [candidate, setCandidate] = useState(null);
   const [cargando, setLoading] = useState(true);
-  const [error, setError] = useState([]);
+  const [error, setError] = useState(null);
 
-  const [jobs, setJobs] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [input, setInput] = useState('');
   useEffect(() => {
     const fetchCandidato = async () => {
       //URL BASE
@@ -53,17 +53,36 @@ function App() {
     <div>
       <h1>Hola, soy {candidate?.firstName}</h1>
       <p>Los siguientes puestos estan disponibles:</p>
-      <ul>
+      <List>
         {jobs.map((item) => (
-          <li key={item.id}>
-            {item.title}
-          </li>
-
+          <JobItem
+            key={item.id}
+            item={item}
+            input={input}
+            setInput={setInput}
+            enviar={enviar}
+          />
         ))}
-      </ul>
+      </List>
 
     </div>
   )
+  function enviar(id) {
+    console.log(id);
+  }
 }
+
+function JobItem(props) {
+  return (
+    <ListItem sx={{ gap: 2, display: "grid", mb: 2 }}>
+      <h3>{props.item.title}</h3>
+      <TextField
+        sx={{ backgroundColor: 'white', borderRadius: 1 }}
+        type="text" placeholder="URL de tu repo" onChange={(e) => props.setInput(e.target.value)} value={props.input} />
+      <Button variant="contained" onClick={() => props.enviar(props.item.id)}>Submit</Button>
+    </ListItem>
+  );
+}
+
 
 export default App
