@@ -8,7 +8,6 @@ function App() {
   const [error, setError] = useState(null);
 
   const [jobs, setJobs] = useState([]);
-  const [input, setInput] = useState('');
   //______________BLOQUE URLS______________________
   //URL BASE
   const url = 'https://botfilter-h5ddh6dye8exb7ha.centralus-01.azurewebsites.net';
@@ -63,8 +62,6 @@ function App() {
           <JobItem
             key={item.id}
             item={item}
-            input={input}
-            setInput={setInput}
             enviar={enviar}
           />
         ))}
@@ -72,12 +69,12 @@ function App() {
 
     </div>
   )
-  async function enviar(jobId) {
+  async function enviar(jobId, urlDelHijo) {
     const dataAEnviar = {
       "uuid": candidate.uuid,
       "jobId": jobId,
       "candidateId": candidate.candidateId,
-      "repoUrl": input,
+      "repoUrl": urlDelHijo,
       //esto no aparecia en el mail pero me lo marcaba en la consola
       "applicationId": candidate.applicationId
     }
@@ -102,6 +99,7 @@ function App() {
 }
 
 function JobItem(props) {
+  const [input, setInput] = useState('');
   return (
     <ListItem sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, mb: 2, alignItems: 'center' }}>
       <h3>{props.item.title}</h3>
@@ -109,9 +107,12 @@ function JobItem(props) {
         sx={{ backgroundColor: 'white', borderRadius: 1 }}
         type="text"
         placeholder="URL de tu repo"
-        onChange={(e) => props.setInput(e.target.value)}
-        value={props.input} />
-      <Button variant="contained" onClick={() => props.enviar(props.item.id)}>Submit</Button>
+        onChange={(e) => setInput(e.target.value)}
+        value={input}
+      />
+      <Button variant="contained" onClick={() => props.enviar(props.item.id, input)}>
+        Submit
+      </Button>
     </ListItem>
   );
 }
